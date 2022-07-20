@@ -1,0 +1,41 @@
+<ul class="sidebar-menu" data-widget="tree">
+    <li class="header">MENU</li>
+    <!-- Optionally, you can add icons to the links -->
+    <li <% if (url === '/') { %>class="active"<% } %>>
+        <a href="/admin">
+            <i class="fa fa-home"></i>
+            <span>Tela Inicial</span>
+        </a>
+    </li>
+    <li <% if (url === '/quartos') { %>class="active"<% } %>>
+        <a href="/admin/quartos">
+            <i class="fa fa-cutlery"></i>
+            <span>Quartos</span>
+        </a>
+    </li>
+    <li <% if (url === '/reservas') { %>class="active"<% } %>>
+        <a href="/admin/reservas">
+            <i class="fa fa-calendar-check-o"></i>
+            <span>Reservas</span>
+        </a>
+    </li>
+    <li <% if (url === '/contatos') { %>class="active"<% } %>>
+        <a href="/admin/contatos">
+            <i class="fa fa-comments"></i>
+            <span>Contatos</span>
+        </a>
+    </li>
+    <li <% if (url === '/usuarios') { %>class="active"<% } %>>
+        <a href="/admin/usuarios">
+            <i class="fa fa-users"></i>
+            <span>Usuários</span>
+        </a>
+    </li>
+    <li <% if (url==='/emails' ) { %>class="active"
+        <% } %>>
+        <a href="/admin/emails">
+            <i class="fa fa-envelope"></i>
+            <span>E-mails</span>
+        </a>
+    </li>
+</ul>

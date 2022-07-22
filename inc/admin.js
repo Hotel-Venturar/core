@@ -293,10 +293,10 @@ module.exports = (io) => {
             return new Promise((s, f) => {
 
                 conn.query(`
-                SELECT CONCAT(YEAR(data_inicio), '-', MONTH(data_inicio)) AS date, COUNT(*) AS total, SUM(qt_hospedes) / COUNT(*) AS avg_people
+                SELECT CONCAT(YEAR(data_inicio), '-',MONTH(data_inicio)) AS date, COUNT(*) AS total, SUM(qt_hospedes) / COUNT(*) AS avg_people
                 FROM tb_reservas
                 WHERE data_inicio BETWEEN ? AND ?
-                GROUP BY YEAR(data_inicio), MONTH(data_inicio), date, total, avg_people
+                GROUP BY YEAR(data_inicio), MONTH(data_inicio), data_inicio
                 ORDER BY YEAR(data_inicio), MONTH(data_inicio)
             `, [
                         params.start,

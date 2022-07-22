@@ -7,6 +7,7 @@ async function getReserva(req, res, next){
         req.query.end = (req.query.end) ? moment(req.query.end).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
     
         admin.reservas(req.query).then(pagination => {
+            console.log(pagination)
             res.render('admin/reservas', {
                 url: req.url,
                 user: req.session.user,

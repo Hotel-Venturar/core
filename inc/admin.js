@@ -201,6 +201,7 @@ module.exports = (io) => {
                 let form = new formidable.IncomingForm();
 
                 form.parse(req, function (err, fields, files) {
+                    console.log(fields);
 
                     let query, params;
 
@@ -208,7 +209,7 @@ module.exports = (io) => {
 
                         query = `
                                 UPDATE tb_reservas
-                                SET nome = ?, email = ?, qt_hospedes = ?, data_inicio = ?, data_fim = ?
+                                SET nome = ?, email = ?, qt_hospedes = ?, data_inicio = ?, data_fim = ?, fk_id_quarto 
                                 WHERE id_reserva = ?
                             `;
                         params = [
@@ -217,6 +218,7 @@ module.exports = (io) => {
                             fields.qt_hospedes,
                             fields.data_inicio,
                             fields.data_fim,
+                            fields.quarto,
                             fields.id_reserva
                         ];
 
@@ -224,15 +226,16 @@ module.exports = (io) => {
                     } else {
 
                         query = `
-                                INSERT INTO tb_reservas (nome, email, qt_hospedes, data_inicio, data_fim)
-                                VALUES(?, ?, ?, ?, ?)
+                                INSERT INTO tb_reservas (nome, email, qt_hospedes, data_inicio, data_fim, fk_id_quarto )
+                                VALUES(?, ?, ?, ?, ?, ?)
                             `;
                         params = [
                             fields.nome,
                             fields.email,
                             fields.qt_hospedes,
                             fields.data_inicio,
-                            fields.data_fim
+                            fields.data_fim,
+                            parseInt(fields.quarto)
                         ];
 
                     }
@@ -261,8 +264,10 @@ module.exports = (io) => {
 
             return new Promise((s, f) => {
 
+                
+                
                 let pag = new Pagination(
-                    "SELECT SQL_CALC_FOUND_ROWS * FROM tb_reservas WHERE data_inicio BETWEEN ? AND ? ORDER BY nome LIMIT ?, ?",
+                    "SELECT SQL_CALC_FOUND_ROWS * FROM tb_reservas JOIN tb_quartos q on q.id_quarto = fk_id_quarto WHERE data_inicio BETWEEN ? AND ? ORDER BY nome LIMIT ?, ?",
                     [
                         params.start,
                         params.end
@@ -270,14 +275,18 @@ module.exports = (io) => {
                 );
 
                 pag.getPage(params.page).then(data => {
+                    this.quartos().then((quartos) => {
+                        s({
+                            data,
+                            quartos,
+                            total: pag.getTotal(),
+                            current: pag.getCurrentPage(),
+                            pages: pag.getTotalPages(),
+                            nav: pag.getNavigation(params)
+                        });
+                    })
 
-                    s({
-                        data,
-                        total: pag.getTotal(),
-                        current: pag.getCurrentPage(),
-                        pages: pag.getTotalPages(),
-                        nav: pag.getNavigation(params)
-                    });
+                   
 
                 }).catch(err => {
 
@@ -290,13 +299,17 @@ module.exports = (io) => {
         },
         reservasChart(params) {
 
+
+
             return new Promise((s, f) => {
 
                 conn.query(`
-                SELECT CONCAT(YEAR(data_inicio), '-',MONTH(data_inicio)) AS date, COUNT(*) AS total, SUM(qt_hospedes) / COUNT(*) AS avg_people
+                SELECT CONCAT(YEAR(data_inicio), '-',MONTH(data_inicio)) AS date, COUNT(*) AS total, 
+                SUM(qt_hospedes) / COUNT(*) AS avg_people, tq.id_quarto as id, tq.nome_quarto as nome
                 FROM tb_reservas
+                JOIN tb_quartos tq
                 WHERE data_inicio BETWEEN ? AND ?
-                GROUP BY YEAR(data_inicio), MONTH(data_inicio), data_inicio
+                GROUP BY YEAR(data_inicio), MONTH(data_inicio), data_inicio, nome, id 
                 ORDER BY YEAR(data_inicio), MONTH(data_inicio)
             `, [
                         params.start,

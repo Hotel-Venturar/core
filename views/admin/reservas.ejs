@@ -1,290 +1,324 @@
 <%- include('inc/header') -%>
 
-<style>
-    .unstyled::-webkit-inner-spin-button,
-.unstyled::-webkit-clear-button {
-    display: none;
-    -webkit-appearance: none;
-}
-</style>
-
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Reservas
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-            <li class="active">Reservas</li>
-        </ol>
-    </section>
-
-    <!-- Main content -->
-    <section class="content container-fluid">
-
-        <div class="box">
-            <div class="box-header">
-                <h3 class="box-title">Lista</h3>
-                <a href="#" class="btn btn-xs pull-right btn-success" data-toggle="modal" data-target="#modal-create"><i
-                        class="fa fa-plus"></i> Novo</a>
-            </div>
-            <div class="box-header" style="height:44px;">
-
-                <div class="box-tools">
-                    <form action="">
-                        <div class="form-group" style="width: 182px; float: left">
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input type="date" name="start" class="form-control unstyled" value="<%= date.start %>">
-                            </div>
-                        </div>
-                        <div class="form-group" style="width: 182px; float: left">
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    até
-                                </div>
-                                <input type="date" name="end" class="form-control unstyled" value="<%= date.end %>">
-                            </div>
-                        </div>
-                        <div class="form-group" style="float: left; margin-left: 7px;">
-                            <button type="submit" class="btn btn-default">OK</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body no-padding">
-                <div style="padding: 10px;">
-                    <canvas id="chart" style="height: 250px"></canvas>
-                </div>
-                <table class="table table-striped table-hover" id="grid">
-                    <thead>
-                        <tr>
-                            <th style="width: 10px">#</th>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Pessoas</th>
-                            <th>Data Inicio</th>
-                            <th>Data Fim</th>
-                            <th style="min-width: 134px;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% pagination.data.forEach(function(row){ %>
-                        <tr data-row="<%= JSON.stringify(row) %>">
-                            <td>
-                                <%= row.id %>
-                            </td>
-                            <td>
-                                <%= row.nome %>
-                            </td>
-                            <td>
-                                <%= row.email %>
-                            </td>
-                            <td>
-                                <%= row.qt_hospedes %>
-                            </td>
-                            <td>
-                                <%= moment(row.data_inicio).format('DD [de] MMMM [de] YYYY') %>
-                            </td>
-                            <td>
-                                <%= moment(row.data_fim).format('DD [de] MMMM [de] YYYY') %>
-                            </td>
-                            <td><button type="button" class="btn btn-xs btn-info btn-update"><i class="fa fa-pencil"></i>
-                                    Editar</button>&nbsp;<button type="button" class="btn btn-xs btn-danger btn-delete"><i
-                                        class="fa fa-trash"></i> Excluir</button></td>
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer clearfix">
-                <ul class="pagination pagination-sm no-margin pull-right">
-                    <% pagination.nav.forEach(function(nav){ %>
-                    <li <% if (nav.active) { %>class="active"
-                        <% } %>><a href="<%= nav.href %>">
-                            <%= nav.text %></a></li>
-                    <% }); %>
-                </ul>
-            </div>
-        </div>
-
-    </section>
-    <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
-
-<div class="modal fade" id="modal-create">
-    <div class="modal-dialog">
-        <div class="modal-content" style="border-top: 3px solid #00a65a;">
-            <form action="/admin/reservas" method="post">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title">Nova Reserva</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="inputNameCreate">Nome</label>
-                        <input type="text" class="form-control" id="inputNomeCreate" name="nome">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputEmailCreate">E-mail</label>
-                        <input type="email" class="form-control" id="inputEmailCreate" name="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputQtHospedesCreate">Quantidade de Hóspedes</label>
-                        <select id="inputQtHospedesCreate" name="qt_hospedes" class="form-control">
-                            <option value=""> -- selecione -- </option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5+</option>
-                        </select>
-                    </div>
-<!--                    <quartos.forEach(function(row){ >
-                        <option value="< row.id_quarto >">< row.nome_quarto ></option>
-                        < }); > -->
-                    <div class="form-group">
-                        <label for="inputDateCreate">Data Inicio</label>
-                        <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputTimeCreate">Data Fim</label>
-                        <input type="date" id="inputDataFimCreate" name="data_fim" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success">Salvar</button>
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
-<div class="modal fade" id="modal-update">
-    <div class="modal-dialog">
-        <div class="modal-content" style="border-top: 3px solid #00c0ef;">
-            <form action="/admin/reservas" method="post">
-                <input type="hidden" name="id_reserva">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title">Editar Reserva</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="inputNameCreate">Nome</label>
-                        <input type="text" class="form-control" id="inputNomeCreate" name="nome">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputEmailCreate">E-mail</label>
-                        <input type="email" class="form-control" id="inputEmailCreate" name="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputQtHospedesCreate">Quantidade de Hóspedes</label>
-                        <select id="inputQtHospedesCreate" name="qt_hospedes" class="form-control">
-                            <option value=""> -- selecione -- </option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5+</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputDateCreate">Data Inicio</label>
-                        <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputTimeCreate">Data Fim</label>
-                        <input type="date" id="inputDataFimCreate" name="data_fim" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-info">Salvar</button>
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
-<script src="/js/moment.min.js"></script>
-<script src="/js/hcode-formsave.js"></script>
-<script src="/js/hcode-grid.js"></script>
-
-<%- include('inc/footer') -%>
-
-<script>
-
-    new HcodeGrid({
-        id: 'grid',
-        urlDelete: '/admin/reservas/${data.id_reserva}',
-        textDeleteConfirm: 'Deseja realmente excluir a reserva de ${data.nome}?'
-    });
-
-    let chart = new Chart(document.querySelector('#chart').getContext('2d'), {
-        type: 'line',
-        options: {
-            maintainAspectRatio: false,
-            tooltips: {
-                mode: 'index',
-                intersect: false
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Mês'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Reservas'
-                    }
-                }]
-            }
+    <style>
+        .unstyled::-webkit-inner-spin-button,
+        .unstyled::-webkit-clear-button {
+            display: none;
+            -webkit-appearance: none;
         }
-    });
+    </style>
 
-    fetch(`/admin/reservas/chart${window.location.search}`)
-        .then(response => response.json())
-        .then(json => {
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Reservas
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                <li class="active">Reservas</li>
+            </ol>
+        </section>
 
-            chart.data = {
-                labels: json.months,
-                datasets: [
-                    {
-                        label: 'Reservas',
-                        pointBackgroundColor: '#FFFFFF',
-                        backgroundColor: 'rgb(54, 162, 235)',
-                        borderColor: 'rgb(54, 162, 235)',
-                        fill: true,
-                        data: json.values
+        <!-- Main content -->
+        <section class="content container-fluid">
+
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Lista</h3>
+                    <a href="#" class="btn btn-xs pull-right btn-success" data-toggle="modal"
+                        data-target="#modal-create"><i class="fa fa-plus"></i> Novo</a>
+                </div>
+                <div class="box-header" style="height:44px;">
+
+                    <div class="box-tools">
+                        <form action="">
+                            <div class="form-group" style="width: 182px; float: left">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="date" name="start" class="form-control unstyled"
+                                        value="<%= date.start %>">
+                                </div>
+                            </div>
+                            <div class="form-group" style="width: 182px; float: left">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        até
+                                    </div>
+                                    <input type="date" name="end" class="form-control unstyled" value="<%= date.end %>">
+                                </div>
+                            </div>
+                            <div class="form-group" style="float: left; margin-left: 7px;">
+                                <button type="submit" class="btn btn-default">OK</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <div style="padding: 10px;">
+                        <canvas id="chart" style="height: 250px"></canvas>
+                    </div>
+                    <div id="export">
+                        <table class="table table-striped table-hover" id="grid" data-cols-width="20,20,10,30,20,20">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px" data-exclude="true">#</th>
+                                    <th data-fill-color="80808000" data-b-a-s>Nome</th>
+                                    <th data-fill-color="80808000" data-b-a-s>E-mail</th>
+                                    <th data-fill-color="80808000" data-b-a-s>Pessoas</th>
+                                    <th data-fill-color="80808000" data-b-a-s>Quarto</th>
+                                    <th data-fill-color="80808000" data-b-a-s>Data Inicio</th>
+                                    <th data-fill-color="80808000" data-b-a-s>Data Fim</th>
+                                    <th style="min-width: 134px;" data-exclude="true">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% pagination.data.forEach(function(row){ %>
+                                    <tr data-row="<%= JSON.stringify(row) %>">
+                                        <td data-exclude="true">
+                                            <%= row.id %>
+                                        </td>
+                                        <td data-b-a-s>
+                                            <%= row.nome %>
+                                        </td>
+                                        <td data-b-a-s>
+                                            <%= row.email %>
+                                        </td>
+                                        <td data-b-a-s>
+                                            <%= row.qt_hospedes %>
+                                        </td>
+                                        <td data-b-a-s>
+                                            <%= row.nome_quarto %>
+                                        </td>
+                                        <td data-b-a-s>
+                                            <%= moment(row.data_inicio).format('DD [de] MMMM [de] YYYY') %>
+                                        </td>
+                                        <td data-b-a-s>
+                                            <%= moment(row.data_fim).format('DD [de] MMMM [de] YYYY') %>
+                                        </td>
+                                        <td data-exclude="true"><button type="button"
+                                                class="btn btn-xs btn-info btn-update"><i class="fa fa-pencil"></i>
+                                                Editar</button>&nbsp;<button type="button"
+                                                class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i>
+                                                Excluir</button></td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <ul class="pagination pagination-sm no-margin pull-right">
+                        <% pagination.nav.forEach(function(nav){ %>
+                            <li <% if (nav.active) { %>class="active"
+                                <% } %>><a href="<%= nav.href %>">
+                                        <%= nav.text %>
+                                    </a>
+                            </li>
+                            <% }); %>
+                    </ul>
+                </div>
+                <button id="btnExportExcell" class="btn btn-xs btn-info btn-update">Exportar Excell</button>
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div class="modal fade" id="modal-create">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-top: 3px solid #00a65a;">
+                <form action="/admin/reservas" method="post">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Nova Reserva</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="inputNameCreate">Nome</label>
+                            <input type="text" class="form-control" id="inputNomeCreate" name="nome">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmailCreate">E-mail</label>
+                            <input type="email" class="form-control" id="inputEmailCreate" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputQtHospedesCreate">Quantidade de Hóspedes</label>
+                            <select id="inputQtHospedesCreate" name="qt_hospedes" class="form-control">
+                                <option value=""> -- selecione -- </option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputQtHospedesCreate">Quarto</label>
+                            <select id="inputQtHospedesCreate" name="quarto" class="form-control">
+                                <option value=""> -- selecione -- </option>
+                                <% pagination.quartos.forEach(function(row){ %>
+                                    <option value="<%= row.id_quarto %>">
+                                        <%= row.nome_quarto %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDateCreate">Data Inicio</label>
+                            <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputTimeCreate">Data Fim</label>
+                            <input type="date" id="inputDataFimCreate" name="data_fim" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modal-update">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-top: 3px solid #00c0ef;">
+                <form action="/admin/reservas" method="post">
+                    <input type="hidden" name="id_reserva">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Editar Reserva</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="inputNameCreate">Nome</label>
+                            <input type="text" class="form-control" id="inputNomeCreate" name="nome">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmailCreate">E-mail</label>
+                            <input type="email" class="form-control" id="inputEmailCreate" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputQtHospedesCreate">Quantidade de Hóspedes</label>
+                            <select id="inputQtHospedesCreate" name="qt_hospedes" class="form-control">
+                                <option value=""> -- selecione -- </option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDateCreate">Data Inicio</label>
+                            <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputTimeCreate">Data Fim</label>
+                            <input type="date" id="inputDataFimCreate" name="data_fim" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-info">Salvar</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <script src="/js/moment.min.js"></script>
+    <script src="/js/hcode-formsave.js"></script>
+    <script src="/js/hcode-grid.js"></script>
+    <script src="/js/table-to-excel.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <%- include('inc/footer') -%>
+
+        <script>
+            $(document).ready(function () {
+                $("#btnExportExcell").click(function () {
+                    let table = document.getElementsByTagName("table");
+                    TableToExcel.convert(table[0], {
+                        name: `exportReservas.xlsx`,
+                        exclude: ".excluded",
+                        exclude_links: true,
+                        sheet: {
+                            name: 'reservas'
+                        }
+                    });
+                });
+            });
+
+            new HcodeGrid({
+                id: 'grid',
+                urlDelete: '/admin/reservas/${data.id_reserva}',
+                textDeleteConfirm: 'Deseja realmente excluir a reserva de ${data.nome}?'
+            });
+
+            let chart = new Chart(document.querySelector('#chart').getContext('2d'), {
+                type: 'line',
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Mês'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Reservas'
+                            }
+                        }]
                     }
-                ]
-            };
+                }
+            });
 
-            chart.update();
+            fetch(`/admin/reservas/chart${window.location.search}`)
+                .then(response => response.json())
+                .then(json => {
 
-        });
+                    chart.data = {
+                        labels: json.months,
+                        datasets: [
+                            {
+                                label: 'Reservas',
+                                pointBackgroundColor: '#FFFFFF',
+                                backgroundColor: 'rgb(54, 162, 235)',
+                                borderColor: 'rgb(54, 162, 235)',
+                                fill: true,
+                                data: json.values
+                            }
+                        ]
+                    };
 
-</script>
+                    chart.update();
 
+                });
+
+        </script>

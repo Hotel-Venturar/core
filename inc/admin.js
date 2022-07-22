@@ -296,7 +296,7 @@ module.exports = (io) => {
                 SELECT CONCAT(YEAR(data_inicio), '-', MONTH(data_inicio)) AS date, COUNT(*) AS total, SUM(qt_hospedes) / COUNT(*) AS avg_people
                 FROM tb_reservas
                 WHERE data_inicio BETWEEN ? AND ?
-                GROUP BY YEAR(data_inicio), MONTH(data_inicio)
+                GROUP BY YEAR(data_inicio), MONTH(data_inicio), date, total, avg_people
                 ORDER BY YEAR(data_inicio), MONTH(data_inicio)
             `, [
                         params.start,

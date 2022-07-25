@@ -1,5 +1,6 @@
 <%- include('inc/header') -%>
 
+
     <style>
         .unstyled::-webkit-inner-spin-button,
         .unstyled::-webkit-clear-button {
@@ -27,8 +28,11 @@
             <div class="box">
                 <div class="box-header">
                     <h3 class="box-title">Lista</h3>
-                    <a href="#" class="btn btn-xs pull-right btn-success" data-toggle="modal"
-                        data-target="#modal-create"><i class="fa fa-plus"></i> Novo</a>
+                    <div class="pull-right">
+                        <a href="#" class="btn btn-xs btn-success" data-toggle="modal" data-target="#modal-create"><i
+                                class="fa fa-plus"></i> Novo</a>
+                        <button id="btnExportExcell" class="btn btn-xs btn-default">Exportar Excel</button>
+                    </div>
                 </div>
                 <div class="box-header" style="height:44px;">
 
@@ -128,7 +132,6 @@
                             <% }); %>
                     </ul>
                 </div>
-                <button id="btnExportExcell" class="btn btn-xs btn-info btn-update">Exportar Excell</button>
             </div>
 
         </section>
@@ -172,7 +175,8 @@
                                 <option value=""> -- selecione -- </option>
                                 <% pagination.quartos.forEach(function(row){ %>
                                     <option value="<%= row.fk_id_quarto %>">
-                                        <%= row.nome_quarto %>
+                                        <%= row.nome_quarto %> | <%= Intl.NumberFormat('pt-br', {style: 'currency' ,
+                                                currency: 'BRL' }).format(row.tarifa) %>
                                     </option>
                                     <% }); %>
                             </select>
@@ -244,7 +248,8 @@
                                 <option value=""> -- selecione -- </option>
                                 <% pagination.quartos.forEach(function(row){ %>
                                     <option value="<%= row.id_quarto %>">
-                                        <%= row.nome_quarto %>
+                                        <%= row.nome_quarto %> | <%= Intl.NumberFormat('pt-br', {style: 'currency' ,
+                                                currency: 'BRL' }).format(row.tarifa) %>
                                     </option>
                                     <% }); %>
                             </select>
@@ -286,6 +291,8 @@
     <%- include('inc/footer') -%>
 
         <script>
+
+
             $(document).ready(function () {
                 $("#btnExportExcell").click(function () {
                     let table = document.getElementsByTagName("table");

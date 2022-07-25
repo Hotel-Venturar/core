@@ -48,6 +48,21 @@ async function criarReserva(req, res, next) {
 
 });
 }
+
+async function alterarStatus(req, res, next) {
+    admin.alterarStatus(req).then(data => {
+  
+      res.send(data);
+  
+  }).catch(err => {
+  
+      res.status(400);
+      res.send({
+          error: err
+      });
+  
+  });
+  }
 async function deleteReserva(req, res, next) {
   admin.reservasDelete(req).then(data => {
 
@@ -64,4 +79,4 @@ async function deleteReserva(req, res, next) {
 }
 
 
-module.exports = {getReserva, getReservaGrafico, criarReserva, deleteReserva}
+module.exports = {getReserva, getReservaGrafico, criarReserva, deleteReserva, alterarStatus}

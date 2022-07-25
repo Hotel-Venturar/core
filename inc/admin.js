@@ -201,15 +201,15 @@ module.exports = (io) => {
                 let form = new formidable.IncomingForm();
 
                 form.parse(req, function (err, fields, files) {
-                    console.log(fields);
-
+                    console.log(fields)
+                    
                     let query, params;
 
                     if (parseInt(fields.id_reserva) > 0) {
 
                         query = `
                                 UPDATE tb_reservas
-                                SET nome = ?, email = ?, qt_hospedes = ?, data_inicio = ?, data_fim = ?, fk_id_quarto 
+                                SET nome = ?, email = ?, qt_hospedes = ?, data_inicio = ?, data_fim = ?, fk_id_quarto = ?, status_reserva = ? 
                                 WHERE id_reserva = ?
                             `;
                         params = [
@@ -218,7 +218,8 @@ module.exports = (io) => {
                             fields.qt_hospedes,
                             fields.data_inicio,
                             fields.data_fim,
-                            fields.quarto,
+                            parseInt(fields.fk_id_quarto),
+                            fields.status_reserva,
                             fields.id_reserva
                         ];
 
@@ -226,7 +227,7 @@ module.exports = (io) => {
                     } else {
 
                         query = `
-                                INSERT INTO tb_reservas (nome, email, qt_hospedes, data_inicio, data_fim, fk_id_quarto )
+                                INSERT INTO tb_reservas (nome, email, qt_hospedes, data_inicio, data_fim, fk_id_quarto, status_reserva )
                                 VALUES(?, ?, ?, ?, ?, ?)
                             `;
                         params = [
@@ -235,10 +236,51 @@ module.exports = (io) => {
                             fields.qt_hospedes,
                             fields.data_inicio,
                             fields.data_fim,
-                            parseInt(fields.quarto)
+                            parseInt(fields.fk_id_quarto),
+                            fields.status_reserva
                         ];
 
                     }
+
+                    conn.query(query, params, (err, results) => {
+
+                        if (err) {
+                            f(err);
+                        } else {
+
+                            io.emit('reservations update', fields);
+
+                            s(fields, results);
+
+                        }
+
+                    }
+                    );
+
+                });
+
+            });
+
+        },
+        alterarStatus(req) {
+
+            return new Promise((s, f) => {
+
+                let form = new formidable.IncomingForm();
+
+                form.parse(req, function (err, fields, files) {
+                    
+                    let query, params;
+
+                        query = `
+                                UPDATE tb_reservas
+                                SET status_reserva = ? 
+                                WHERE id_reserva = ?
+                            `;
+                        params = [
+                            fields.status_reserva,
+                            fields.id_reserva
+                        ];
 
                     conn.query(query, params, (err, results) => {
 

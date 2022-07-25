@@ -63,7 +63,7 @@
                         <canvas id="chart" style="height: 250px"></canvas>
                     </div>
                     <div id="export">
-                        <table class="table table-striped table-hover" id="grid" data-cols-width="20,20,10,30,20,20">
+                        <table class="table table-striped table-hover" id="grid" data-cols-width="20,20,10,30,20,20,20">
                             <thead>
                                 <tr>
                                     <th style="width: 10px" data-exclude="true">#</th>
@@ -73,6 +73,7 @@
                                     <th data-fill-color="80808000" data-b-a-s>Quarto</th>
                                     <th data-fill-color="80808000" data-b-a-s>Data Inicio</th>
                                     <th data-fill-color="80808000" data-b-a-s>Data Fim</th>
+                                    <th data-fill-color="80808000" data-b-a-s>Status</th>
                                     <th style="min-width: 134px;" data-exclude="true">Ações</th>
                                 </tr>
                             </thead>
@@ -99,6 +100,9 @@
                                         </td>
                                         <td data-b-a-s>
                                             <%= moment(row.data_fim).format('DD [de] MMMM [de] YYYY') %>
+                                        </td>
+                                        <td data-b-a-s>
+                                            <%= row.status_reserva %>
                                         </td>
                                         <td data-exclude="true"><button type="button"
                                                 class="btn btn-xs btn-info btn-update"><i class="fa fa-pencil"></i>
@@ -163,14 +167,23 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="inputQtHospedesCreate">Quarto</label>
-                            <select id="inputQtHospedesCreate" name="quarto" class="form-control">
+                            <label for="inputQuarto">Quarto</label>
+                            <select id="inputQuarto" name="fk_id_quarto" class="form-control">
                                 <option value=""> -- selecione -- </option>
                                 <% pagination.quartos.forEach(function(row){ %>
-                                    <option value="<%= row.id_quarto %>">
+                                    <option value="<%= row.fk_id_quarto %>">
                                         <%= row.nome_quarto %>
                                     </option>
                                     <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputStatus">Status</label>
+                            <select id="inputStatus" name="status" class="form-control">
+                                <option value=""> -- selecione -- </option>
+                                <option value="Aguardando aprovação"> Aguardando aprovação</option>
+                                <option value="Reserva aceita">Reserva aceita</option>
+                                <option value="Reserva recusada">Reserva recusada</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -180,6 +193,7 @@
                         <div class="form-group">
                             <label for="inputTimeCreate">Data Fim</label>
                             <input type="date" id="inputDataFimCreate" name="data_fim" class="form-control">
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -222,6 +236,26 @@
                                 <option value="3">3</option>
                                 <option value="4">4</option>
                                 <option value="5">5+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputQuarto">Quarto</label>
+                            <select id="inputQuarto" name="fk_id_quarto" class="form-control">
+                                <option value=""> -- selecione -- </option>
+                                <% pagination.quartos.forEach(function(row){ %>
+                                    <option value="<%= row.id_quarto %>">
+                                        <%= row.nome_quarto %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputStatus">Status</label>
+                            <select id="inputStatus" name="status_reserva" class="form-control">
+                                <option value=""> -- selecione -- </option>
+                                <option value="Aguardando aprovação"> Aguardando aprovação</option>
+                                <option value="Reserva aceita">Reserva aceita</option>
+                                <option value="Reserva recusada">Reserva recusada</option>
                             </select>
                         </div>
                         <div class="form-group">

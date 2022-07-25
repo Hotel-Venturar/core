@@ -48,7 +48,7 @@ module.exports = (io) => {
 
     router.post('/reservas', ReservaController.criarReserva);
     
-    router.put('/reservas/status', ReservaController.alterarStatus);
+    router.post('/reservas/status', ReservaController.alterarStatus);
 
     router.delete('/reservas/:id', ReservaController.deleteReserva);
 

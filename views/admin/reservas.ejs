@@ -108,11 +108,21 @@
                                         <td data-b-a-s>
                                             <%= row.status_reserva %>
                                         </td>
-                                        <td data-exclude="true"><button type="button"
-                                                class="btn btn-xs btn-info btn-update"><i class="fa fa-pencil"></i>
-                                                Editar</button>&nbsp;<button type="button"
-                                                class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i>
-                                                Excluir</button></td>
+                                        <td data-exclude="true">
+
+                                            <button type="button" class="btn btn-xs btn-info btn-update"><i
+                                                    class="fa fa-pencil"></i>
+                                                Editar</button>&nbsp;
+
+                                            <button type="button" class="btn btn-xs btn-warning btn-reserva"><i
+                                                    class="fa fa-bookmark-o"></i>
+                                                Status Reserva</button>&nbsp;
+
+
+                                            <button type="button" class="btn btn-xs btn-danger btn-delete"><i
+                                                    class="fa fa-trash"></i>
+                                                Excluir</button>
+                                        </td>
                                     </tr>
                                     <% }); %>
                             </tbody>
@@ -174,14 +184,14 @@
                             <select id="inputQuarto" name="fk_id_quarto" class="form-control">
                                 <option value=""> -- selecione -- </option>
                                 <% pagination.quartos.forEach(function(row){ %>
-                                    <option value="<%= row.fk_id_quarto %>">
+                                    <option value="<%= row.id_quarto %>">
                                         <%= row.nome_quarto %> | <%= Intl.NumberFormat('pt-br', {style: 'currency' ,
                                                 currency: 'BRL' }).format(row.tarifa) %>
                                     </option>
                                     <% }); %>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="inputStatus">Status</label>
                             <select id="inputStatus" name="status" class="form-control">
                                 <option value=""> -- selecione -- </option>
@@ -189,7 +199,8 @@
                                 <option value="Reserva aceita">Reserva aceita</option>
                                 <option value="Reserva recusada">Reserva recusada</option>
                             </select>
-                        </div>
+                        </div> <!-->
+                        <input type="text" value="Reserva aceita" name="status_reserva" style="display:none">
                         <div class="form-group">
                             <label for="inputDateCreate">Data Inicio</label>
                             <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control">
@@ -254,7 +265,7 @@
                                     <% }); %>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="inputStatus">Status</label>
                             <select id="inputStatus" name="status_reserva" class="form-control">
                                 <option value=""> -- selecione -- </option>
@@ -262,7 +273,7 @@
                                 <option value="Reserva aceita">Reserva aceita</option>
                                 <option value="Reserva recusada">Reserva recusada</option>
                             </select>
-                        </div>
+                        </div> <!-->
                         <div class="form-group">
                             <label for="inputDateCreate">Data Inicio</label>
                             <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control">
@@ -282,6 +293,80 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+
+    <div class="modal fade" id="modal-reserva">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-top: 3px solid #00c0ef;">
+                <form action="/admin/reservas/status" method="post">
+                    <input type="hidden" name="id_reserva">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Editar Status da Reserva</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="inputNameCreate">Nome</label>
+                            <input type="text" class="form-control" id="inputNomeCreate" name="nome" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmailCreate">E-mail</label>
+                            <input type="email" class="form-control" id="inputEmailCreate" name="email" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputQtHospedesCreate">Quantidade de Hóspedes</label>
+                            <select id="inputQtHospedesCreate" name="qt_hospedes" class="form-control" disabled>
+                                <option value=""> -- selecione -- </option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputQuarto">Quarto</label>
+                            <select id="inputQuarto" name="fk_id_quarto" class="form-control" disabled>
+                                <option value=""> -- selecione -- </option>
+                                <% pagination.quartos.forEach(function(row){ %>
+                                    <option value="<%= row.id_quarto %>">
+                                        <%= row.nome_quarto %> | <%= Intl.NumberFormat('pt-br', {style: 'currency' ,
+                                                currency: 'BRL' }).format(row.tarifa) %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputStatus">Status</label>
+                            <select id="inputStatus" name="status_reserva" class="form-control">
+                                <option value=""> -- selecione -- </option>
+                                <option value="Aguardando aprovação"> Aguardando aprovação</option>
+                                <option value="Reserva aceita">Reserva aceita</option>
+                                <option value="Reserva recusada">Reserva recusada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDateCreate">Data Inicio</label>
+                            <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control"
+                                disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputTimeCreate">Data Fim</label>
+                            <input type="date" id="inputDataFimCreate" name="data_fim" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-info">Salvar</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
 
     <script src="/js/moment.min.js"></script>
     <script src="/js/hcode-formsave.js"></script>

@@ -141,7 +141,6 @@ module.exports = (io) => {
                             } else {
                                 params.push(fields.foto);
 
-                                console.log("passei aqui insert");    
                                 query = `
                                 INSERT INTO tb_quartos (nome_quarto, descricao, tarifa, foto)
                                 VALUES(?, ?, ?, ?)
@@ -201,7 +200,6 @@ module.exports = (io) => {
                 let form = new formidable.IncomingForm();
 
                 form.parse(req, function (err, fields, files) {
-                    console.log(fields)
                     
                     let query, params;
 
@@ -209,7 +207,7 @@ module.exports = (io) => {
 
                         query = `
                                 UPDATE tb_reservas
-                                SET nome = ?, email = ?, qt_hospedes = ?, data_inicio = ?, data_fim = ?, fk_id_quarto = ?, status_reserva = ? 
+                                SET nome = ?, email = ?, qt_hospedes = ?, data_inicio = ?, data_fim = ?, fk_id_quarto = ? 
                                 WHERE id_reserva = ?
                             `;
                         params = [
@@ -219,7 +217,6 @@ module.exports = (io) => {
                             fields.data_inicio,
                             fields.data_fim,
                             parseInt(fields.fk_id_quarto),
-                            fields.status_reserva,
                             fields.id_reserva
                         ];
 
@@ -228,7 +225,7 @@ module.exports = (io) => {
 
                         query = `
                                 INSERT INTO tb_reservas (nome, email, qt_hospedes, data_inicio, data_fim, fk_id_quarto, status_reserva )
-                                VALUES(?, ?, ?, ?, ?, ?)
+                                VALUES(?, ?, ?, ?, ?, ?, ?)
                             `;
                         params = [
                             fields.nome,
@@ -388,7 +385,6 @@ module.exports = (io) => {
 
             return new Promise((s, r) => {
 
-                console.log(req.params.id);
 
                 if (!req.params.id) {
                     f('Informe o ID.');

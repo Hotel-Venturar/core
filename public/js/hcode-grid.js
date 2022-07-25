@@ -4,8 +4,14 @@ class HcodeGrid {
 
         config.listeners = Object.assign({
             afterUpdateClick() {
-
+                console.log("entrei aqui no update")
                 $(this.options.modalUpdate).modal('show');
+
+            },
+            afterReservaClick() {
+                console.log("entrei aqui")
+
+                $(this.options.modalReserva).modal('show');
 
             },
             afterDeleteClick() {
@@ -18,12 +24,22 @@ class HcodeGrid {
                 window.location.reload();
 
             },
+            afterFormReservaError(){
+
+                alert('Não foi possível enviar o formulário!');
+
+            },
             afterFormCreateError(){
 
                 alert('Não foi possível enviar o formulário!');
 
             },
             afterFormUpdate() {
+
+                window.location.reload();
+
+            },
+            afterFormReserva() {
 
                 window.location.reload();
 
@@ -41,12 +57,30 @@ class HcodeGrid {
         this.options = Object.assign({}, {
             modalCreate: '#modal-create',
             modalUpdate: '#modal-update',
+            modalReserva: '#modal-reserva',
+            btnReserva: '.btn-reserva',
             btnUpdate: '.btn-update',
             btnDelete: '.btn-delete',
             textDeleteConfirm: 'Deseja realmente excluir?',
             onUpdateLoad: (formUpdate, name, data) => {
 
                 let input = formUpdate.querySelector(`[name=${name}]`);
+
+                if (input) {
+                    switch (input.type) {
+                        case 'date':
+                            input.value = moment(data[name]).format('YYYY-MM-DD');
+                            break;
+                        default:
+                            input.value = data[name];
+
+                    }
+                }
+
+            },
+            onReservaLoad: (formReserva, name, data) => {
+
+                let input = formReserva.querySelector(`[name=${name}]`);
 
                 if (input) {
                     switch (input.type) {
@@ -66,6 +100,7 @@ class HcodeGrid {
 
         this.formCreate = document.querySelector(this.options.modalCreate + ' form');
         this.formUpdate = document.querySelector(this.options.modalUpdate + ' form');
+        this.formReserva = document.querySelector(this.options.modalReserva + ' form');
 
         this.initForms();
         this.initRowButtons();
@@ -101,6 +136,17 @@ class HcodeGrid {
             });
         }
 
+        if (this.formReserva) {
+            this.formReserva.submitAjax({
+                success: response => {
+                    this.fireEvent('afterFormReserva', [response]);
+                },
+                failure: () => {
+                    this.fireEvent('afterFormReservaError');
+                }
+            });
+        }
+
         if (this.formUpdate) {
             this.formUpdate.submitAjax({
                 success: response => {
@@ -130,7 +176,12 @@ class HcodeGrid {
 
                         this.actionBtnDelete(e);
 
-                    } else {
+                    } else if (btn.classList.contains('btn-reserva')) {
+
+                        this.actionBtnReserva(e);
+
+                    } 
+                    else {
 
                         this.options.listeners.clickRowButton(btn, this.getTrData(e), row, e);
 
@@ -157,6 +208,22 @@ class HcodeGrid {
         }
 
         this.fireEvent('afterUpdateClick');
+
+    }
+
+    actionBtnReserva(e) {
+
+        this.fireEvent('beforeReservaClick');
+
+        let data = this.getTrData(e);
+
+        for (let name in data) {
+
+            this.options.onReservaLoad(this.formReserva, name, data);
+
+        }
+
+        this.fireEvent('afterReservaClick');
 
     }
 

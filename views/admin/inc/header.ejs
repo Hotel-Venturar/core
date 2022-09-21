@@ -4,14 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Admin - Hcode Treinamentos</title>
+    <title>Área Administrativa - Hotel Ventura</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
     <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
     <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css">
-    <meta name="author" content="Hcode.com.br" />
+    <meta name="author" content="Antonio Vinicius" />
     <meta name="theme-color" content="#3c8dbc">
 </head>
 
@@ -24,9 +24,9 @@
             <!-- Logo -->
             <a href="/admin" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini">HCODE</span>
+                <span class="logo-mini"><b>Adm</b> Hotel Ventura</span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg">HCODE</span>
+                <span class="logo-lg"><b>Admin</b> Hotel Ventura</span>
             </a>
 
             <!-- Header Navbar -->
@@ -45,20 +45,18 @@
                                 <!-- The user image in the navbar-->
                                 <img src="dist/img/avatar5.png" class="user-image" alt="User Image">
                                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                                <span class="hidden-xs"><%= user.name  %></span>
+                                <span class="hidden-xs"><%= user.nome  %></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- The user image in the menu -->
                                 <li class="user-header">
                                     <img src="dist/img/avatar5.png" class="img-circle" alt="User Image">
-
-                                    <p>
-                                        <%= user.name  %>
+                                    <p><%= user.nome  %>
                                         <small><%= user.email  %></small>
                                     </p>
                                 </li>
                                 <!-- Menu Body -->
-                                <li class="user-body">
+<!--                                 <li class="user-body">
                                     <div class="row">
                                         <div class="col-xs-4 text-center">
                                             <a href="#">Followers</a>
@@ -69,14 +67,14 @@
                                         <div class="col-xs-4 text-center">
                                             <a href="#">Friends</a>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <!-- /.row -->
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
-                                    <div class="pull-left">
+<!--                                     <div class="pull-left">
                                         <a href="#" class="btn btn-default btn-flat">Perfil</a>
-                                    </div>
+                                    </div> -->
                                     <div class="pull-right">
                                         <a href="/admin/logout" class="btn btn-default btn-flat">Sair</a>
                                     </div>
@@ -99,7 +97,7 @@
                         <img src="dist/img/avatar5.png" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
-                        <p><%= user.name  %></p>
+                        <p><%= user.nome  %></p>
                         <!-- Status -->
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>

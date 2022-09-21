@@ -28,6 +28,24 @@ module.exports = (io) => {
     body: {}
   };
 
+  let defaultLogin = {
+    title: 'Contato - Hotel Ventura',
+    header: {
+      background: 'images/img_bg_4.jpg',
+      title: 'Faça seu Login!'
+    },
+    body: {}
+  };
+
+  let defaultServicos = {
+    title: 'Serviços - Hotel Ventura',
+    header: {
+      background: 'images/img_bg_1.jpg',
+      title: 'É um prazer poder servir!'
+    },
+    body: {}
+  };
+
   router.get('/', (req, res, next) => {
 
     conn.query(
@@ -111,7 +129,7 @@ module.exports = (io) => {
       "SELECT * FROM tb_quartos ORDER BY nome_quarto",
       (err, results, fields) => {
 
-        res.render('menu', Object.assign({}, defaults, {
+        res.render('quartos', Object.assign({}, defaults, {
           title: 'Quartos - Hotel Ventura',
           header: {
             background: 'images/img_bg_1.jpg',
@@ -246,13 +264,13 @@ module.exports = (io) => {
 
   router.get('/servicos', (req, res, next) => {
 
-    res.render('servicos', Object.assign({}, defaults, {
-      title: 'Serviços - Restaurante Saboroso!',
-      header: {
-        background: 'images/img_bg_1.jpg',
-        title: 'É um prazer poder servir!'
-      }
-    }));
+    res.render('servicos', Object.assign({}, defaults, defaultServicos));
+
+  });
+
+  router.get('/login', (req, res, next) => {
+
+    res.render('login', Object.assign({}, defaults, defaultLogin));
 
   });
 

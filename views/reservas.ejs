@@ -1,78 +1,67 @@
 <%- include('page-header') -%>
 
-<div class="gtco-section" style="padding-bottom: 14em;">
-    <div class="gtco-container">
-        <div class="row">
+<div class="gtco-section">
+	<div class="gtco-container">
+		<div class="row">
             <div class="col-md-12">
-                <div class="col-md-6 animate-box">
-
-                    <% if (typeof success === 'string') { %>
-                    <div class="alert alert-success" role="alert">
-                        <%=success%>
-                    </div>
-                    <% } %>
-                    <% if (typeof error === 'string') { %>
-                    <div class="alert alert-danger" role="alert"> <strong>Ops!</strong> <%=error%>
-                    </div>
-                    <% } %>
-
-                    <h3>Reserva de quarto</h3>
-                    <form action="/reservas" method="POST">
-                        <div class="form-group">
-                            <label for="inputNameCreate">Nome</label>
-                            <input type="text" class="form-control" id="inputNomeCreate" name="nome" value="<%=body.nome%>">
-                        </div>
-                        <div class="form-group">
-                            <label for="inputEmailCreate">E-mail</label>
-                            <input type="email" class="form-control" id="inputEmailCreate" name="email" value="<%=body.email%>">
-                        </div>
-                        <div class="form-group">
-                            <label for="inputQtHospedesCreate">Quantidade de Hóspedes</label>
-                            <select id="inputQtHospedesCreate" name="qt_hospedes" class="form-control" value="<%=body.qt_hospedes%>">
-                                <option value=""> -- selecione -- </option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5+</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputQuarto">Quarto</label>
-                        </div>
-                        <!-- <div class="form-group">
-                            <label for="inputStatus">Status</label>
-                            <select id="inputStatus" name="status" class="form-control">
-                                <option value=""> -- selecione -- </option>
-                                <option value="Aguardando aprovação"> Aguardando aprovação</option>
-                                <option value="Reserva aceita">Reserva aceita</option>
-                                <option value="Reserva recusada">Reserva recusada</option>
-                            </select>
-                        </div> <!-->
-                        <input type="text" value="Reserva aceita" name="status_reserva" style="display:none">
-                        <div class="form-group">
-                            <label for="inputDateCreate">Data Inicio</label>
-                            <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control" value="<%=body.data_inicio%>">
-                        </div>
-                        <div class="form-group">
-                            <label for="inputTimeCreate">Data Fim</label>
-                            <input type="date" id="inputDataFimCreate" name="data_fim" class="form-control" value="<%=body.data_fim%>">
-                        </div>
-                        <div class="form-group">
-							<input type="submit" value="Reservar" class="btn btn-primary">
-						</div>
-                    </form>
+                <% if (typeof success === 'string') { %>
+                <div class="alert alert-success" role="alert">
+                    <%=success%>
                 </div>
-                <div class="col-md-5 col-md-push-1 animate-box">
-                    <div class="gtco-contact-info">
-                        <h3>Informações de Contato</h3>
-						<ul>
-							<li class="address">Rua Ficticia Ramos, 256<br> Sum Paulo - SP</li>
-							<li class="phone"><a href="tel://1234567890">+55 99 3123 4567</a></li>
-							<li class="email"><a href="mailto:contato@hcode.com.br">contato@hotelventura.com.br</a></li>
-						</ul>
-                    </div>
+                <% } %>
+                <% if (typeof error === 'string') { %>
+                <div class="alert alert-danger" role="alert"> <strong>Ops!</strong> <%=error%>
                 </div>
+                <% } %>
+
+                <h3>Reserva de quarto</h3>
+                <form action="/reservas" method="POST">
+                    <div class="form-group">
+                        <label for="inputNameCreate">Nome</label>
+                        <input type="text" class="form-control" id="inputNomeCreate" name="nome" value="<%=body.nome%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmailCreate">E-mail</label>
+                        <input type="email" class="form-control" id="inputEmailCreate" name="email" value="<%=body.email%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputQtHospedesCreate">Quantidade de Hóspedes</label>
+                        <select id="inputQtHospedesCreate" name="qt_hospedes" class="form-control" value="<%=body.qt_hospedes%>">
+                            <option value=""> -- selecione -- </option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputQuarto">Quarto</label>
+                        <select id="inputQuarto" name="fk_id_quarto" class="form-control">
+                            <option value=""> -- selecione -- </option>
+                            <% quartos.forEach(function(row){ %>
+                                <option value="<%= row.id_quarto %>">
+                                    <%= row.nome_quarto %> | <%= Intl.NumberFormat('pt-br', {style: 'currency' ,
+                                            currency: 'BRL' }).format(row.tarifa) %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div> 
+                    <div class="form-group">
+                        <input type="text" value="Aguardando aprovação" name="status_reserva" style="display:none">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDateCreate">Data Inicio</label>
+                        <input type="date" id="inputDataInicioCreate" name="data_inicio" class="form-control" value="<%=body.data_inicio%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputTimeCreate">Data Fim</label>
+                        <input type="date" id="inputDataFimCreate" name="data_fim" class="form-control" value="<%=body.data_fim%>">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Reservar" class="btn btn-primary">
+                    </div>
+                </form>
             </div>
         </div>
     </div>

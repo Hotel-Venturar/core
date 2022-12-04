@@ -3,6 +3,7 @@ module.exports = (io) => {
   let conn = require('./../inc/db');
   let express = require('express');
   let formidable = require('formidable');
+  // let Pagination = require('./Pagination');
   let router = express.Router();
 
   let defaults = {
@@ -143,24 +144,35 @@ module.exports = (io) => {
   });
 
   router.get('/reservas', (req, res, next) => {
-
-    res.render('reservas', Object.assign({}, defaults, defaultsReservas));
-
+  
+    conn.query(
+      "SELECT * FROM tb_quartos ORDER BY nome_quarto",
+      (err, results, fields) => {
+        res.render('reservas', Object.assign({}, defaults, defaultsReservas, {
+          quartos: results
+        }));
+    });
   });
 
   router.post('/reservas', (req, res, next) => {
 
     let render = (error, success) => {
 
-      res.render('reservas', Object.assign({}, defaults, defaultsReservas, {
-        body: req.body,
-        success,
-        error
-      }));
-
+      conn.query(
+        "SELECT * FROM tb_quartos ORDER BY nome_quarto",
+        (err, results, fields) => {
+          res.render('reservas', Object.assign({}, defaults, defaultsReservas, {
+            quartos: results,
+            body: req.body,
+            success,
+            error        
+          }));
+      });
     };
 
-    if (!req.body.name) {
+    console.log(req.body);
+
+    if (!req.body.nome) {
 
       render('Preencha o campo Nome.');
 
@@ -168,32 +180,30 @@ module.exports = (io) => {
 
       render('Preencha o campo E-mail.');
 
-    } else if (!req.body.people) {
+    } else if (!req.body.qt_hospedes) {
 
       render('Selecione a quantidade de pessoas.');
 
-    } else if (!req.body.date.trim()) {
+    } else if (!req.body.data_inicio.trim()) {
 
-      render('Selecione o dia da reserva.');
+      render('Selecione a data de inicio da reserva.');
 
-    } else if (!req.body.time.trim()) {
+    } else if (!req.body.data_fim.trim()) {
 
-      render('Selecione a hora da reserva.');
+      render('Selecione a data fim da reserva.');
 
     } else {
 
-      let date = req.body.date.split('/');
-      date = `${date[2]}-${date[1]}-${date[0]}`;
-      req.body.date = date;
-
       conn.query(
-        "INSERT INTO tb_reservations (nome, email, qt_hospedes, data_inicio, data_fim) VALUES(?, ?, ?, ?, ?)",
+        " INSERT INTO tb_reservas (nome, email, qt_hospedes, data_inicio, data_fim, fk_id_quarto, status_reserva ) VALUES(?, ?, ?, ?, ?, ?, ?)",
         [
           req.body.nome,
           req.body.email,
           req.body.qt_hospedes,
           req.body.data_inicio,
-          req.body.data_fim
+          req.body.data_fim,
+          parseInt(req.body.fk_id_quarto),
+          req.body.status_reserva
         ],
         (err, results) => {
 
